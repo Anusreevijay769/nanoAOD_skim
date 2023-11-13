@@ -99,26 +99,26 @@ class HZZAnalysisCppProducer(Module):
         print("{:27}:{:7} {}".format("Pass2l1metCut: ", str(self.worker.cut2l1met), " Events"))
 
         print("\n========== END: Print Cut flow table  ====================\n")
-        print("PassTrig: "+str(self.passtrigEvts)+" Events")
-        print("Pass4eCut: "+str(self.worker.cut4e)+" Events")
-        print("Pass4eGhostRemoval: "+str(self.worker.cutghost4e)+" Events")
-        print("Pass4eLepPtCut: "+str(self.worker.cutLepPt4e)+" Events")
-        print("Pass4eQCDSupress: "+str(self.worker.cutQCD4e)+" Events")
-        print("PassmZ1mZ2Cut_4e: "+str(self.worker.cutZZ4e)+" Events")
-        print("Passm4l_105_160_Cut_4e: "+str(self.worker.cutm4l4e)+" Events")
-        print("Pass4muCut: "+str(self.worker.cut4mu)+" Events")
-        print("Pass4muGhostRemoval: "+str(self.worker.cutghost4mu)+" Events")
-        print("Pass4muLepPtCut: "+str(self.worker.cutLepPt4mu)+" Events")
-        print("Pass4muQCDSupress: "+str(self.worker.cutQCD4mu)+" Events")
-        print("PassmZ1mZ2Cut_4mu: "+str(self.worker.cutZZ4mu)+" Events")
-        print("Passm4l_105_160_Cut_4mu: "+str(self.worker.cutm4l4mu)+" Events")
-        print("Pass2e2muCut: "+str(self.worker.cut2e2mu)+" Events")
-        print("Pass2e2muGhostRemoval: "+str(self.worker.cutghost2e2mu)+" Events")
-        print("Pass2e2muLepPtCut: "+str(self.worker.cutLepPt2e2mu)+" Events")
-        print("Pass2e2muQCDSupress: "+str(self.worker.cutQCD2e2mu)+" Events")
-        print("PassmZ1mZ2Cut_2e2mu: "+str(self.worker.cutZZ2e2mu)+" Events")
-        print("Passm4l_105_160_Cut_2e2mu: "+str(self.worker.cutm4l2e2mu)+" Events")
-        print("PassZZSelection: "+str(self.passZZEvts)+" Events")
+        #print("PassTrig: "+str(self.passtrigEvts)+" Events")
+        #print("Pass4eCut: "+str(self.worker.cut4e)+" Events")
+        #print("Pass4eGhostRemoval: "+str(self.worker.cutghost4e)+" Events")
+        #print("Pass4eLepPtCut: "+str(self.worker.cutLepPt4e)+" Events")
+        #print("Pass4eQCDSupress: "+str(self.worker.cutQCD4e)+" Events")
+        #print("PassmZ1mZ2Cut_4e: "+str(self.worker.cutZZ4e)+" Events")
+        #print("Passm4l_105_160_Cut_4e: "+str(self.worker.cutm4l4e)+" Events")
+        #print("Pass4muCut: "+str(self.worker.cut4mu)+" Events")
+        #print("Pass4muGhostRemoval: "+str(self.worker.cutghost4mu)+" Events")
+        #print("Pass4muLepPtCut: "+str(self.worker.cutLepPt4mu)+" Events")
+        #print("Pass4muQCDSupress: "+str(self.worker.cutQCD4mu)+" Events")
+        #print("PassmZ1mZ2Cut_4mu: "+str(self.worker.cutZZ4mu)+" Events")
+        #print("Passm4l_105_160_Cut_4mu: "+str(self.worker.cutm4l4mu)+" Events")
+        #print("Pass2e2muCut: "+str(self.worker.cut2e2mu)+" Events")
+        #print("Pass2e2muGhostRemoval: "+str(self.worker.cutghost2e2mu)+" Events")
+        #print("Pass2e2muLepPtCut: "+str(self.worker.cutLepPt2e2mu)+" Events")
+        #print("Pass2e2muQCDSupress: "+str(self.worker.cutQCD2e2mu)+" Events")
+        #print("PassmZ1mZ2Cut_2e2mu: "+str(self.worker.cutZZ2e2mu)+" Events")
+        #print("Passm4l_105_160_Cut_2e2mu: "+str(self.worker.cutm4l2e2mu)+" Events")
+        #print("PassZZSelection: "+str(self.passZZEvts)+" Events")
         pass
 
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
@@ -143,9 +143,9 @@ class HZZAnalysisCppProducer(Module):
         self.out.branch("etaZ2_2j",  "F")
         self.out.branch("pTZ2_2j",  "F")
         self.out.branch("EneZ2_2j",  "F")
-        self.out.branch("phiZ2_2l2v",  "F")
-        self.out.branch("pTZ2_2l2v",  "F")
-        self.out.branch("EneZ2_2l2v",  "F")
+        self.out.branch("phiZ2_met",  "F")
+        self.out.branch("pTZ2_met",  "F")
+        self.out.branch("EneZ2_met",  "F")
         self.out.branch("D_CP",  "F")
         self.out.branch("D_0m",  "F")
         self.out.branch("D_0hp",  "F")
@@ -179,12 +179,12 @@ class HZZAnalysisCppProducer(Module):
         self.out.branch("phij2",  "F")
 
 
-        self.out.branch("Electron_Fsr_pt",  "F", lenVar = "nElectron")
-        self.out.branch("Electron_Fsr_eta",  "F", lenVar = "nElectron")
-        self.out.branch("Electron_Fsr_phi",  "F", lenVar = "nElectron")
-        self.out.branch("Muon_Fsr_pt",  "F", lenVar = "nMuon")
-        self.out.branch("Muon_Fsr_eta",  "F", lenVar = "nMuon")
-        self.out.branch("Muon_Fsr_phi",  "F", lenVar = "nMuon")
+        self.out.branch("Electron_Fsr_pt",  "F", lenVar = "0")
+        self.out.branch("Electron_Fsr_eta",  "F", lenVar = "0")
+        self.out.branch("Electron_Fsr_phi",  "F", lenVar = "0")
+        self.out.branch("Muon_Fsr_pt",  "F", lenVar = "0")
+        self.out.branch("Muon_Fsr_eta",  "F", lenVar = "0")
+        self.out.branch("Muon_Fsr_phi",  "F", lenVar = "0")
 
         # Branches dedicated for 2l2q channel
 
@@ -283,6 +283,8 @@ class HZZAnalysisCppProducer(Module):
             # 2nd part is to avoid the situation where we get 1 electron and 1 muon
             # foundZZCandidate_2l2q = False # print("Inside the 2l2q loop")
             foundZZCandidate_2l2q = self.worker.ZZSelection_2l2q()
+            ##foundZZCandidate_2l2nu = False ####
+            ##pass ###
             # print("Inside the 2l2q loop: END")
         elif ((self.worker.nTightEle + self.worker.nTightMu == 2) and (not self.worker.nTightMu == 1) and (self.worker.MET_sumEt > 150)):
             foundZZCandidate_2l2nu = self.worker.ZZSelection_2l2nu()
@@ -308,15 +310,16 @@ class HZZAnalysisCppProducer(Module):
 
         if (foundZZCandidate_2l2nu):
             keepIt = True
-            self.passZZEvts += 1
+           # self.passZZEvts += 1
         #     FatJet_PNZvsQCD = self.worker.FatJet_PNZvsQCD
         #     self.out.fillBranch("FatJet_PNZvsQCD",FatJet_PNZvsQCD)
-            phiZ2_2l2v = self.worker.Z2_met.Phi()
-            pTZ2_2l2v = self.worker.Z2_met.Pt()
-            EneZ2_2l2v = self.worker.Z2_met.E()
-            self.out.fillBranch("phiZ2_2l2v",phiZ2_2l2v)
-            self.out.fillBranch("pTZ2_2l2v",pTZ2_2l2v)
-            self.out.fillBranch("EneZ2_2l2v",EneZ2_2l2v)
+            phiZ2_met = self.worker.Z2_met.Phi()
+            pTZ2_met = self.worker.Z2_met.Pt()
+            EneZ2_met = self.worker.Z2_met.E()
+            print("inside 2l2nu loop")
+            self.out.fillBranch("phiZ2_met",phiZ2_met)
+            self.out.fillBranch("pTZ2_met",pTZ2_met)
+            self.out.fillBranch("EneZ2_met",EneZ2_met)
 
         if (foundZZCandidate or foundZZCandidate_2l2q or foundZZCandidate_2l2nu):
             keepIt = True

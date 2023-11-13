@@ -1085,7 +1085,7 @@ bool H4LTools::ZZSelection_2l2nu(){
     cut2l_met_m40_180++;
     if (flag2e_met)
         cut2e_met_m40_180++;
-    if (flag2mu)
+    if (flag2mu_met)
         cut2mu_met_m40_180++;
 
     jetidx = SelectedJets(tighteleforjetidx, tightmuforjetidx);
@@ -1095,6 +1095,7 @@ bool H4LTools::ZZSelection_2l2nu(){
     {
      foundZZCandidate = true;
      Z2_met.SetPtEtaPhiE(MET_pt[0], 0,  MET_phi[0], MET_sumEt);
+     std::cout<<"DEBUG:Z2_met " << std::endl;
      cut2l1met++;
     }
     ZZ_metsystem = Z1 + Z2_met;
