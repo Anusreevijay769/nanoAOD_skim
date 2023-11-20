@@ -19,6 +19,8 @@ class H4LTools {
       float eleLoosedxycut,eleLoosedzcut,MuLoosedxycut,MuLoosedzcut,MuTightdxycut,MuTightdzcut,MuTightTrackerLayercut,MuTightpTErrorcut,MuHighPtBound,eleIsocut,MuIsocut;
       float fsrphotonPtcut,fsrphotonEtacut,fsrphotonIsocut,fsrphotondRlcut,fsrphotondRlOverPtcut, JetPtcut,JetEtacut;
       float eleBDTWPLELP,eleBDTWPMELP,eleBDTWPHELP,eleBDTWPLEHP,eleBDTWPMEHP,eleBDTWPHEHP;
+      float HZZ2l2q_Leading_Lep_pT, HZZ2l2q_SubLeading_Lep_pT, HZZ2l2q_Lep_eta, HZZ2l2q_MZLepcutdown, HZZ2l2q_MZLepcutup;
+
       void InitializeElecut(float elePtcut_,float eleEtacut_,float elesip3dCut_,float eleLoosedxycut_,float eleLoosedzcut_,float eleIsocut_,float eleBDTWPLELP_,float eleBDTWPMELP_, float eleBDTWPHELP_,float eleBDTWPLEHP_,float eleBDTWPMEHP_,float eleBDTWPHEHP_){
         elePtcut = elePtcut_;
         eleEtacut = eleEtacut_;
@@ -33,7 +35,17 @@ class H4LTools {
         eleBDTWPMEHP = eleBDTWPMEHP_;
         eleBDTWPHEHP = eleBDTWPHEHP_;
       }
-      void InitializeMucut(float MuPtcut_,float MuEtacut_,float Musip3dCut_,float MuLoosedxycut_,float MuLoosedzcut_,float MuIsocut_,float MuTightdxycut_,float MuTightdzcut_,float MuTightTrackerLayercut_,float MuTightpTErrorcut_,float MuHighPtBound_){
+
+      void Initialize2l2qEvtCut(float HZZ2l2q_Leading_Lep_pT_, float HZZ2l2q_SubLeading_Lep_pT_, float HZZ2l2q_Lep_eta_, float HZZ2l2q_MZLepcutdown_, float HZZ2l2q_MZLepcutup_) {
+        HZZ2l2q_Leading_Lep_pT = HZZ2l2q_Leading_Lep_pT_;
+        HZZ2l2q_SubLeading_Lep_pT = HZZ2l2q_SubLeading_Lep_pT_;
+        HZZ2l2q_Lep_eta = HZZ2l2q_Lep_eta_;
+        HZZ2l2q_MZLepcutdown = HZZ2l2q_MZLepcutdown_;
+        HZZ2l2q_MZLepcutup = HZZ2l2q_MZLepcutup_;
+      }
+
+      void InitializeMucut(float MuPtcut_, float MuEtacut_, float Musip3dCut_, float MuLoosedxycut_, float MuLoosedzcut_, float MuIsocut_, float MuTightdxycut_, float MuTightdzcut_, float MuTightTrackerLayercut_, float MuTightpTErrorcut_, float MuHighPtBound_)
+      {
         MuPtcut = MuPtcut_;
         MuEtacut = MuEtacut_;
         Musip3dCut = Musip3dCut_;
@@ -131,7 +143,7 @@ class H4LTools {
         Muon_pdgId.push_back(Muon_pdgId_);
         Muon_charge.push_back(Muon_charge_);
         Muon_pfRelIso03_all.push_back(Muon_pfRelIso03_all_);
-        
+
       }
       void SetMuonsGen(int Muon_genPartIdx_){
         Muon_genPartIdx.push_back(Muon_genPartIdx_);
@@ -182,7 +194,7 @@ class H4LTools {
         GenPart_pt = GenPart_pt_;
       }*/
       void SetObjectNum(unsigned nElectron_,unsigned nMuon_,unsigned nJet_,unsigned nFsrPhoton_){
-        nElectron = nElectron_; 
+        nElectron = nElectron_;
         nMuon = nMuon_;
         nJet = nJet_;
         nFsrPhoton = nFsrPhoton_;
@@ -250,9 +262,7 @@ class H4LTools {
       bool flag2l;
       bool flag2e_met;
       bool flag2mu_met;
-      bool flag2l_met;      
-
-
+      bool flag2l_met; 
 
       void LeptonSelection();
       std::vector<unsigned int> looseEle,looseMu,bestEle,bestMu, tighteleforjetidx, tightmuforjetidx;
@@ -304,7 +314,7 @@ class H4LTools {
         Electronindex.clear();  Muonindex.clear(); AllEid.clear(); AllMuid.clear(); Elelist.clear(); Mulist.clear(); ElelistFsr.clear(); Mulist.clear();
         Elechg.clear(); Muchg.clear(); Muiso.clear();Eiso.clear(); Eid.clear(); muid.clear(); TightEleindex.clear(); TightMuindex.clear();
         nElectron = 0; nMuon = 0; nJet = 0; nFsrPhoton = 0; nGenPart = 0;
-        nTightEle = 0; nTightMu = 0; nTightEleChgSum = 0; nTightMuChgSum = 0; MET_sumEt = 0;
+        nTightEle = 0; nTightMu = 0; nTightEleChgSum = 0; nTightMuChgSum = 0; MET_sumEt = 0; MET_sumEt_2l2q = 0;
 
         pTL1 = -999; etaL1 = -999; phiL1 = -999; massL1 = -999;
         pTL2 = -999; etaL2 = -999; phiL2 = -999; massL2 = -999;
@@ -315,8 +325,7 @@ class H4LTools {
         pTj2 = -99;  etaj2 = -99;  phij2 = -99;  mj2 = -99;
 
         flag4e=false; flag4mu=false; flag2e2mu=false;
-        flag2e=false; flag2mu=false; flag2l=false;
-        flag2e_met=false; flag2mu_met=false; flag2l_met=false;
+        flag2e=false; flag2mu=false; flag2l=false; flag2e_met=false; flag2l_met=false; flag2mu_met=false;
       }
       bool isFSR=true;
       unsigned int Zsize=0;
@@ -337,8 +346,8 @@ class H4LTools {
       TLorentzVector ZZsystem;
       TLorentzVector ZZsystemnofsr;
       TLorentzVector ZZ_2jsystem;
-      TLorentzVector ZZ_2jsystemnofsr;
       TLorentzVector ZZ_metsystem;
+      TLorentzVector ZZ_2jsystemnofsr;
       TLorentzVector ZZ_metsystemnofsr;
 
       RoccoR  *calibrator;
@@ -363,7 +372,7 @@ class H4LTools {
       int cut4e, cut4mu, cut2e2mu, cutZZ4e, cutZZ4mu, cutZZ2e2mu, cutm4l4e, cutm4l4mu, cutm4l2e2mu, cutghost2e2mu, cutQCD2e2mu, cutLepPt2e2mu, cutghost4e, cutQCD4e, cutLepPt4e, cutghost4mu, cutQCD4mu, cutLepPt4mu;
       float pTL1, etaL1, phiL1, massL1, pTL2, etaL2, phiL2, massL2, pTL3, etaL3, phiL3, massL3, pTL4, etaL4, phiL4, massL4;
       float pTj1, etaj1, phij1, mj1, pTj2, etaj2, phij2, mj2;
-      float MET_sumEt; ///new
+      float MET_sumEt; float MET_sumEt_2l2q; ///new
 
 
 

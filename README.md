@@ -58,7 +58,6 @@ nanoAOD skiming code for H->ZZ->2l2Q studies.
    ```
 
 5. batch job submission.
-
    1. Step: 5 (a): Condor-job submission (recommended)
       1. In the file [condor_setup_lxplus.py](condor_setup_lxplus.py), specify the correct input text file (present inside directory [input_data_Files](input_data_Files)) from which you need to take input NanoAOD DAS names. Also, updated the output EOS path. Then do the following:
 
@@ -71,7 +70,6 @@ nanoAOD skiming code for H->ZZ->2l2Q studies.
          condor_submit <Files-created-from-above-command>.jdl
          ```
 
-   1. Step: 5(b): Crab-job submission (Not tested recently)
 
       ```bash
       cd crab/
@@ -120,4 +118,3 @@ nanoAOD skiming code for H->ZZ->2l2Q studies.
    ```
 
 ## Few important points
-

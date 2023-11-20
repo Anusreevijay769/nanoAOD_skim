@@ -59,7 +59,7 @@ Electron:
       LowPT:
         0.9443653660
       HighPT:
-        -0.5169136775 
+        -0.5169136775
   Isocut:
     0.35
 Muon:
@@ -104,3 +104,12 @@ Jet:
   Etacut:
     4.7
 
+HZZ2l2q:
+  Leading_Lep_pT: 40
+  SubLeading_Lep_pT: 24
+  Lep_eta: 2.4
+  MZLepcut:
+    down:
+      60
+    up:
+      120
