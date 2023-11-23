@@ -334,25 +334,28 @@ class HZZAnalysisCppProducer(Module):
         passZZ2l2nuSelection = False
 	
 	print("=="*51)
+        foundZZCandidate_2l2q = self.worker.ZZSelection_2l2q()
+        foundZZCandidate_2l2nu = self.worker.ZZSelection_2l2nu()
+        foundZZCandidate_4l = self.worker.ZZSelection_4l()
 
-        if ((self.worker.nTightEle + self.worker.nTightMu == 2) and (not self.worker.nTightMu == 1)):
-            # This event should belong to either 2l2q or 2l2nu \
-            # nTightEle + nTightMu == 2 => 2l2q or 2l2nu => (2,0), (0,2), (1,1)
-            # => Reject (1,1) combination: ( (nTightEle + nTightMu == 2) and (not nTightEle == 1))
-            # 2nd part is to avoid the situation where we get 1 electron and 1 muon
-	    print("====> met pt: {}, {}, {}".format(met.pt, met.phi, met.sumEt))
-            foundZZCandidate_2l2q = self.worker.ZZSelection_2l2q()
-            foundZZCandidate_2l2nu = self.worker.ZZSelection_2l2nu()
-            print("(2l2q, 2l2nu) = ({}, {})".format(foundZZCandidate_2l2q, foundZZCandidate_2l2nu))
-            #print("Inside the 2l2q loop: END")
+        #if ((self.worker.nTightEle + self.worker.nTightMu == 2) and (not self.worker.nTightMu == 1)):
+        #    # This event should belong to either 2l2q or 2l2nu \
+        #    # nTightEle + nTightMu == 2 => 2l2q or 2l2nu => (2,0), (0,2), (1,1)
+        #    # => Reject (1,1) combination: ( (nTightEle + nTightMu == 2) and (not nTightEle == 1))
+        #    # 2nd part is to avoid the situation where we get 1 electron and 1 muon
+	#    print("====> met pt: {}, {}, {}".format(met.pt, met.phi, met.sumEt))
+        #    foundZZCandidate_2l2q = self.worker.ZZSelection_2l2q()
+        #    foundZZCandidate_2l2nu = self.worker.ZZSelection_2l2nu()
+        #    print("(2l2q, 2l2nu) = ({}, {})".format(foundZZCandidate_2l2q, foundZZCandidate_2l2nu))
+        #    #print("Inside the 2l2q loop: END")
 
-        elif (self.worker.nTightEle + self.worker.nTightMu >= 4):
-        #if (self.worker.nTightEle + self.worker.nTightMu >= 4):
-            # This event should belong to 4l; nTightEle + nTightMu >= 4
-            foundZZCandidate_4l = self.worker.ZZSelection_4l()
-        #if (foundZZCandidate_2l2q and foundZZCandidate_2l2nu ):
-            #print("both 2l2q and 2l2nu passed the MET selection")
-            #exit()
+        #elif (self.worker.nTightEle + self.worker.nTightMu >= 4):
+        ##if (self.worker.nTightEle + self.worker.nTightMu >= 4):
+        #    # This event should belong to 4l; nTightEle + nTightMu >= 4
+        #    foundZZCandidate_4l = self.worker.ZZSelection_4l()
+        ##if (foundZZCandidate_2l2q and foundZZCandidate_2l2nu ):
+        #    #print("both 2l2q and 2l2nu passed the MET selection")
+        #    #exit()
         
 
         if (foundZZCandidate_2l2q):
