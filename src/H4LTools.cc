@@ -939,9 +939,10 @@ bool H4LTools::ZZSelection_2l2q(){
         flag2mu = true;
         flag2l = true;
     }
-
     bool foundZZCandidate = false;
-    
+
+
+
     if(!findZCandidate()){
         // std::cout << " Inside the .cc file => Inside findZCandidate" << std::endl;
         // std::cout << "foundZZCandidate:: " << foundZZCandidate << std::endl;
@@ -1010,6 +1011,14 @@ bool H4LTools::ZZSelection_2l2q(){
  //   if(foundZZCandidate == false){
    //     return foundZZCandidate;
   //  }
+
+    std::cout<<"H4LTools.cc#1015: MET pt, phi, sumET: " << MET_pt << "\t" << MET_phi << "\t" << MET_sumEt << std::endl;
+    if (MET_pt >= 150) {
+        std::cout << " Inside the .cc file=>metcut2l2q" << std::endl;
+        return foundZZCandidate;
+        //std::cout << foundZZCandidate << std::endl;
+    }
+    cutMETlt150++;
     jetidx = SelectedJets(tighteleforjetidx, tightmuforjetidx);
     FatJetidx = SelectedFatJets(tighteleforjetidx, tightmuforjetidx);
 
@@ -1098,7 +1107,8 @@ bool H4LTools::ZZSelection_2l2nu(){
         flag2mu_met = true;
         flag2l_met = true;
     }
-    bool foundZZCandidate = false;   
+    bool foundZZCandidate = false;
+   
     if(!findZCandidate()){
         return foundZZCandidate;
     }
@@ -1113,6 +1123,16 @@ bool H4LTools::ZZSelection_2l2nu(){
     if(Zlist.size()<1){
         return foundZZCandidate;
     }
+    
+    if ( (Zlep1pt[0] < HZZ2l2q_Leading_Lep_pT)) {
+        return foundZZCandidate;
+
+    }
+    if ( (Zlep2pt[0] < HZZ2l2q_SubLeading_Lep_pT)) {
+       return foundZZCandidate;
+
+    }
+
     // Find ZZ candidate
     std::vector<int> Z1CanIndex;
     std::vector<int> Z2CanIndex;
@@ -1135,16 +1155,21 @@ bool H4LTools::ZZSelection_2l2nu(){
         cut2e_met_m40_180++;
     if (flag2mu)
         cut2mu_met_m40_180++;
-
-    jetidx = SelectedJets(tighteleforjetidx, tightmuforjetidx);
-    FatJetidx = SelectedFatJets(tighteleforjetidx, tightmuforjetidx);
-    
-    if (MET_sumEt > 150)
-    {
-     foundZZCandidate = true;
-     Z2_met.SetPtEtaPhiE(MET_pt[0], 0,  MET_phi[0], MET_sumEt);
-     cut2l1met++;
+        
+    std::cout<<"H4LTools.cc#1150: MET pt, phi, sumET: " << MET_pt << "\t" << MET_phi << "\t" << MET_sumEt << std::endl;
+    if (MET_pt < 150) {
+        std::cout << " Inside the .cc file, 2l2nu loop=>found MET < 150" << std::endl;
+        return foundZZCandidate;
     }
+    cutMETgt150++;
+    foundZZCandidate = true;
+
+    //jetidx = SelectedJets(tighteleforjetidx, tightmuforjetidx);
+    //FatJetidx = SelectedFatJets(tighteleforjetidx, tightmuforjetidx);
+    
+    Z2_met.SetPtEtaPhiE(MET_pt, 0,  MET_phi, MET_pt);
+    cut2l1met++;
+
     ZZ_metsystem = Z1 + Z2_met;
     ZZ_metsystemnofsr = Z1nofsr + Z2_met;
     

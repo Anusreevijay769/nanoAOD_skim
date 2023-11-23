@@ -118,9 +118,10 @@ class H4LTools {
 
       void SetMET(float MET_pt_, float MET_phi_, float MET_sumEt_)
       {
-        MET_pt.push_back(MET_pt_);
-        MET_phi.push_back(MET_phi_);
+        MET_pt = MET_pt_;
+        MET_phi = MET_phi_;
         MET_sumEt = MET_sumEt_;
+	std::cout<<"Inside header file: MET_sumEt = " << MET_sumEt_ << "\t" << MET_sumEt << std::endl;
       }
 
       
@@ -289,7 +290,9 @@ class H4LTools {
         Muon_nTrackerLayers.clear();Muon_genPartIdx.clear();Muon_pdgId.clear();Muon_charge.clear();
         Muon_isTracker.clear();Muon_isGlobal.clear();Muon_isPFcand.clear();
         Jet_pt.clear();Jet_phi.clear();Jet_eta.clear();Jet_mass.clear();Jet_btagDeepC.clear();
-        MET_pt.clear();MET_phi.clear();  ////new
+        MET_pt = 0.0; MET_phi = 0.0;  ////new
+	MET_sumEt = 0.0;
+
         Jet_jetId.clear();Jet_puId.clear();
         FatJet_pt.clear();FatJet_phi.clear();FatJet_eta.clear();FatJet_SDmass.clear();FatJet_btagDeepB.clear(); FatJet_PNZvsQCD.clear();
 
@@ -314,8 +317,7 @@ class H4LTools {
         Electronindex.clear();  Muonindex.clear(); AllEid.clear(); AllMuid.clear(); Elelist.clear(); Mulist.clear(); ElelistFsr.clear(); Mulist.clear();
         Elechg.clear(); Muchg.clear(); Muiso.clear();Eiso.clear(); Eid.clear(); muid.clear(); TightEleindex.clear(); TightMuindex.clear();
         nElectron = 0; nMuon = 0; nJet = 0; nFsrPhoton = 0; nGenPart = 0;
-        nTightEle = 0; nTightMu = 0; nTightEleChgSum = 0; nTightMuChgSum = 0; MET_sumEt = 0; MET_sumEt_2l2q = 0;
-
+        nTightEle = 0; nTightMu = 0; nTightEleChgSum = 0; nTightMuChgSum = 0; 
         pTL1 = -999; etaL1 = -999; phiL1 = -999; massL1 = -999;
         pTL2 = -999; etaL2 = -999; phiL2 = -999; massL2 = -999;
         pTL3 = -999; etaL3 = -999; phiL3 = -999; massL3 = -999;
@@ -366,13 +368,14 @@ class H4LTools {
       float getDL1ZgsConstant(float ZZMass);
 
       int cut2e_m40_180, cut2mu_m40_180, cut2l_m40_180;
+      int cutMETlt150;
+      int cutMETgt150;
       int cut2l_met_m40_180, cut2e_met_m40_180, cut2mu_met_m40_180;
       int cut2e, cut2mu, cut2l, cut2l1J, cut2l2j, cut2l1Jor2j, cut2l1met;
       int cut2e_met, cut2mu_met, cut2l_met;
       int cut4e, cut4mu, cut2e2mu, cutZZ4e, cutZZ4mu, cutZZ2e2mu, cutm4l4e, cutm4l4mu, cutm4l2e2mu, cutghost2e2mu, cutQCD2e2mu, cutLepPt2e2mu, cutghost4e, cutQCD4e, cutLepPt4e, cutghost4mu, cutQCD4mu, cutLepPt4mu;
       float pTL1, etaL1, phiL1, massL1, pTL2, etaL2, phiL2, massL2, pTL3, etaL3, phiL3, massL3, pTL4, etaL4, phiL4, massL4;
       float pTj1, etaj1, phij1, mj1, pTj2, etaj2, phij2, mj2;
-      float MET_sumEt; float MET_sumEt_2l2q; ///new
 
 
 
@@ -383,7 +386,8 @@ class H4LTools {
 
       std::vector<float> Jet_pt,Jet_phi,Jet_eta,Jet_mass,Jet_btagDeepC;
       std::vector<int> Jet_jetId,Jet_puId;
-      std::vector<float> MET_pt,MET_phi;
+      float MET_pt, MET_phi;
+      float MET_sumEt; 
 
       std::vector<float> FatJet_pt, FatJet_phi, FatJet_eta, FatJet_SDmass, FatJet_btagDeepB, FatJet_PNZvsQCD;
       std::vector<int> FatJet_jetId;
@@ -443,6 +447,8 @@ H4LTools::H4LTools(int year, std::string DATAPATH){
   cutm4l2e2mu = 0;
   cutm4l4e = 0;
   cutm4l4mu = 0;
+  cutMETlt150 = 0;
+  cutMETgt150 = 0;
 
   cut2e = 0;
   cut2mu = 0;
