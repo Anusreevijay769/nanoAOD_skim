@@ -1068,20 +1068,20 @@ bool H4LTools::ZZSelection_2l2q(){
             float mass_diff = 999.0;
             for (unsigned int i = 0; i < jetidx.size(); i++)
             {
-                for (unsigned int j = i+1; j < jetidx.size()+1; j++)
+                for (unsigned int j = i+1; j < jetidx.size(); j++) // FIXME: Check if there should be +1 or not
                 {
                     TLorentzVector Z2_1;
                     TLorentzVector Z2_2;
-                    Z2_1.SetPtEtaPhiM(Jet_pt[i], Jet_eta[i], Jet_phi[i], Jet_mass[i]);
-                    Z2_2.SetPtEtaPhiM(Jet_pt[j], Jet_eta[j], Jet_phi[j], Jet_mass[j]);
+                    Z2_1.SetPtEtaPhiM(Jet_pt[jetidx[i]], Jet_eta[jetidx[i]], Jet_phi[jetidx[i]], Jet_mass[jetidx[i]]);
+                    Z2_2.SetPtEtaPhiM(Jet_pt[jetidx[j]], Jet_eta[jetidx[j]], Jet_phi[jetidx[j]], Jet_mass[jetidx[j]]);
                     TLorentzVector Z2_2j_temp = Z2_1 + Z2_2;
 
                     if (fabs(Z2_2j_temp.M() - Zmass) < mass_diff)
                     {
                         mass_diff = fabs(Z2_2j_temp.M() - Zmass);
                         Z2 = Z2_2j_temp;
-                        resolvedJet1_Index = i;
-                        resolvedJet2_Index = j;
+                        resolvedJet1_Index = jetidx[i];
+                        resolvedJet2_Index = jetidx[j];
                     }
                 }
             }
@@ -1197,7 +1197,7 @@ bool H4LTools::ZZSelection_2l2nu(){
     cutMETgt150++;
     foundZZCandidate = true;
 
-    //jetidx = SelectedJets(tighteleforjetidx, tightmuforjetidx);
+    jetidx = SelectedJets(tighteleforjetidx, tightmuforjetidx);
     //FatJetidx = SelectedFatJets(tighteleforjetidx, tightmuforjetidx);
 
     Z2_met.SetPtEtaPhiE(MET_pt, 0,  MET_phi, MET_pt);
@@ -1208,6 +1208,68 @@ bool H4LTools::ZZSelection_2l2nu(){
 
     float METZZ_met;
     METZZ_met = ZZ_metsystem.E();
+
+    // count the number of tight, medium and loose b-tagged jets
+    for (unsigned int i = 0; i < jetidx.size(); i++)
+    {
+        if (Jet_btagDeepFlavB[jetidx[i]] > 0.7100)  nTightBtaggedJets++;
+        if (Jet_btagDeepFlavB[jetidx[i]] > 0.2783)  nMediumBtaggedJets++;
+        if (Jet_btagDeepFlavB[jetidx[i]] > 0.0490)  nLooseBtaggedJets++;
+    }
+
+    // Get VBF jets having dEta>4.0 and mjj>500
+    // If there are more than one pair of VBF jets, select the pair with highest mjj
+    float VBF_jj_mjj = 0.0;
+    if (DEBUG)
+        std::cout << "Size of jets: " << jetidx.size() << std::endl;
+    for (unsigned int i = 0; i < jetidx.size(); i++)
+    {
+        for (unsigned int j = i+1; j < jetidx.size(); j++)
+        {
+            // std::cout << "Inside: i: " << i << ", j: " << j << std::endl;
+            TLorentzVector VBF_jet1;
+            TLorentzVector VBF_jet2;
+            VBF_jet1.SetPtEtaPhiM(Jet_pt[jetidx[i]], Jet_eta[jetidx[i]], Jet_phi[jetidx[i]], Jet_mass[jetidx[i]]);
+            VBF_jet2.SetPtEtaPhiM(Jet_pt[jetidx[j]], Jet_eta[jetidx[j]], Jet_phi[jetidx[j]], Jet_mass[jetidx[j]]);
+            TLorentzVector VBF_jj = VBF_jet1 + VBF_jet2;
+
+            if (fabs(VBF_jet1.Eta() - VBF_jet2.Eta()) > 4.0 && VBF_jj.M() > 500.0)
+            {
+                if (VBF_jj.M() > VBF_jj_mjj)
+                {
+                    VBF_jj_mjj = VBF_jj.M();
+                    VBF_jet1_index = jetidx[i];
+                    VBF_jet2_index = jetidx[j];
+                    if (DEBUG)
+                        std::cout << "Inside: VBF_jj_mjj: " << VBF_jj_mjj << "\tVBF_jet1_index: " << VBF_jet1_index << "\tVBF_jet2_index: " << VBF_jet2_index << std::endl;
+                }
+            }
+        }
+    }
+
+    if (jetidx.size() >= 2 && VBF_jet1_index >= 0 && VBF_jet2_index >= 0)
+    {
+
+        TLorentzVector VBF_jet1;
+        TLorentzVector VBF_jet2;
+        VBF_jet1.SetPtEtaPhiM(Jet_pt[VBF_jet1_index], Jet_eta[VBF_jet1_index], Jet_phi[VBF_jet1_index], Jet_mass[VBF_jet1_index]);
+        VBF_jet2.SetPtEtaPhiM(Jet_pt[VBF_jet2_index], Jet_eta[VBF_jet2_index], Jet_phi[VBF_jet2_index], Jet_mass[VBF_jet2_index]);
+        TLorentzVector VBF_jj = VBF_jet1 + VBF_jet2;
+        if (DEBUG)
+            std::cout << "Outside: VBF_jj_mjj: " << VBF_jj.M() << "\tVBF_jet1_index: " << VBF_jet1_index << "\tVBF_jet2_index: " << VBF_jet2_index << std::endl;
+    }
+
+    // // If there are VBF jets, set the kinematics of VBF jets
+    // if (VBF_jj_mjj > 0.0)
+    // {
+    //     TLorentzVector VBF_jet1;
+    //     TLorentzVector VBF_jet2;
+    //     VBF_jet1.SetPtEtaPhiM(Jet_pt[VBF_jet1_index], Jet_eta[VBF_jet1_index], Jet_phi[VBF_jet1_index], Jet_mass[VBF_jet1_index]);
+    //     VBF_jet2.SetPtEtaPhiM(Jet_pt[VBF_jet2_index], Jet_eta[VBF_jet2_index], Jet_phi[VBF_jet2_index], Jet_mass[VBF_jet2_index]);
+    //     VBF_jj = VBF_jet1 + VBF_jet2;
+
+    //     cut2lMETVBF++;
+    // }
 
 
     return foundZZCandidate;

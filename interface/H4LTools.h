@@ -99,14 +99,14 @@ public:
         Electron_pfRelIso03_all.push_back(Electron_pfRelIso03_all_);
     }
 
-    void SetJets(float Jet_pt_, float Jet_eta_, float Jet_phi_, float Jet_mass_, int Jet_jetId_, float Jet_btagDeepC_,
+    void SetJets(float Jet_pt_, float Jet_eta_, float Jet_phi_, float Jet_mass_, int Jet_jetId_, float Jet_btagDeepFlavB_,
                  int Jet_puId_)
     {
         Jet_pt.push_back(Jet_pt_);
         Jet_phi.push_back(Jet_phi_);
         Jet_eta.push_back(Jet_eta_);
         Jet_mass.push_back(Jet_mass_);
-        Jet_btagDeepC.push_back(Jet_btagDeepC_);
+        Jet_btagDeepFlavB.push_back(Jet_btagDeepFlavB_);
         Jet_jetId.push_back(Jet_jetId_);
         Jet_puId.push_back(Jet_puId_); // 1 or 0?
     }
@@ -246,10 +246,18 @@ public:
     bool flag2mu_met;
     bool flag2l_met;
 
+    // count number of tight, medium and loose b-tagged jets
+    // FIXME: For now these b-tag numbers are only for 2l2nu case
+    int nTightBtaggedJets;
+    int nMediumBtaggedJets;
+    int nLooseBtaggedJets;
+
     float boostedJet_PNScore;
     int boostedJet_Index;   // Contains the inded of 2l2q case; the boosted jet index that satisfies the P/N score and pT cut>200 GeV; No mass cut
     int resolvedJet1_Index; // Contains the index of 2l2q case; when paired using mass close to Z-boson mass
     int resolvedJet2_Index; // Contains the index of 2l2q case; when paired using mass close to Z-boson mass
+    int VBF_jet1_index;    // Contains the index of 2l2nu case
+    int VBF_jet2_index;
 
     void LeptonSelection();
     std::vector<unsigned int> looseEle, looseMu, bestEle, bestMu, tighteleforjetidx, tightmuforjetidx;
@@ -336,7 +344,7 @@ public:
         Jet_phi.clear();
         Jet_eta.clear();
         Jet_mass.clear();
-        Jet_btagDeepC.clear();
+        Jet_btagDeepFlavB.clear();
         Jet_jetId.clear();
         Jet_puId.clear();
         FatJet_pt.clear();
@@ -417,10 +425,17 @@ public:
         phij2 = -99;
         mj2 = -99;
 
+        nTightBtaggedJets = -999;
+        nMediumBtaggedJets = -999;
+        nLooseBtaggedJets = -999;
+
         boostedJet_PNScore = -999.0;
         boostedJet_Index = -999;
         resolvedJet1_Index = -999;
         resolvedJet2_Index = -999;
+        VBF_jet1_index = -999;
+        VBF_jet2_index = -999;
+
         // Flags for various final states
         isBoosted2l2q = false;
         flag4e = false;
@@ -495,7 +510,7 @@ private:
     std::vector<float> Electron_mvaFall17V2Iso, Electron_pfRelIso03_all;
     std::vector<int> Electron_pdgId;
 
-    std::vector<float> Jet_pt, Jet_phi, Jet_eta, Jet_mass, Jet_btagDeepC;
+    std::vector<float> Jet_pt, Jet_phi, Jet_eta, Jet_mass, Jet_btagDeepFlavB;
     std::vector<int> Jet_jetId, Jet_puId;
     float MET_pt, MET_phi;
     float MET_sumEt;
