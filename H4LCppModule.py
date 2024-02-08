@@ -189,6 +189,7 @@ class HZZAnalysisCppProducer(Module):
         # Branches for 2l2nu channel: VBF jets and dijet kinematics
         self.out.branch("VBF_jet1_index",  "I")
         self.out.branch("VBF_jet2_index",  "I")
+        self.out.branch("minDeltaPhi_METAK4jet",  "F")
 
         # Branches for 2l2nu channel: VBF jets and dijet kinematics
         self.out.branch("VBF_2l2nu_jet1_pT",  "F")
@@ -279,6 +280,7 @@ class HZZAnalysisCppProducer(Module):
         phiZ2_met = -999.
         pTZ2_met = -999.
         EneZ2_met = -999.
+        minDeltaPhi_METAK4jet = 999.0
 
         VBF_jet1_index = -999
         VBF_jet2_index = -999
@@ -410,6 +412,7 @@ class HZZAnalysisCppProducer(Module):
         resolvedJet2_Index = self.worker.resolvedJet2_Index
         VBF_jet1_index = self.worker.VBF_jet1_index
         VBF_jet2_index = self.worker.VBF_jet2_index
+        minDeltaPhi_METAK4jet = self.worker.minDeltaPhi
 
         nTightBtaggedJets = self.worker.nTightBtaggedJets
         nMediumBtaggedJets = self.worker.nMediumBtaggedJets
@@ -561,6 +564,7 @@ class HZZAnalysisCppProducer(Module):
         self.out.fillBranch("phiZ2_met",phiZ2_met)
         self.out.fillBranch("pTZ2_met",pTZ2_met)
         self.out.fillBranch("EneZ2_met",EneZ2_met)
+        self.out.fillBranch("minDeltaPhi_METAK4jet", minDeltaPhi_METAK4jet)
 
         self.out.fillBranch("VBF_jet1_index", VBF_jet1_index)
         self.out.fillBranch("VBF_jet2_index", VBF_jet2_index)

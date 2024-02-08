@@ -1217,6 +1217,16 @@ bool H4LTools::ZZSelection_2l2nu(){
         if (Jet_btagDeepFlavB[jetidx[i]] > 0.0490)  nLooseBtaggedJets++;
     }
 
+    // Get Angle between MET and nearest good jet
+    for (unsigned int i = 0; i < jetidx.size(); i++)
+    {
+        float dPhi = fabs(TVector2::Phi_mpi_pi(Jet_phi[jetidx[i]] - MET_phi));
+        if (dPhi < minDeltaPhi)
+        {
+            minDeltaPhi = dPhi;
+        }
+    }
+
     // Get VBF jets having dEta>4.0 and mjj>500
     // If there are more than one pair of VBF jets, select the pair with highest mjj
     float VBF_jj_mjj = 0.0;

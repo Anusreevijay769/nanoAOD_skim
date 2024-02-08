@@ -251,6 +251,7 @@ public:
     int nTightBtaggedJets;
     int nMediumBtaggedJets;
     int nLooseBtaggedJets;
+    float minDeltaPhi;
 
     float boostedJet_PNScore;
     int boostedJet_Index;   // Contains the inded of 2l2q case; the boosted jet index that satisfies the P/N score and pT cut>200 GeV; No mass cut
@@ -428,6 +429,7 @@ public:
         nTightBtaggedJets = -999;
         nMediumBtaggedJets = -999;
         nLooseBtaggedJets = -999;
+        minDeltaPhi = 999.0;
 
         boostedJet_PNScore = -999.0;
         boostedJet_Index = -999;
