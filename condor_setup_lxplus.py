@@ -72,7 +72,7 @@ def main(args):
     #                         "Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt, " +
     #                         "keep_and_drop_data.txt")
 
-    #with open('input_data_Files/sample_list_v6_2017_campaign.dat') as in_file:
+    # with open('input_data_Files/sample_list_v6_2017_campaign.dat') as in_file:
     with open('input_data_Files/'+InputFileFromWhereReadDASNames) as in_file:
         outjdl_file = open(condor_file_name+".jdl","w")
         outjdl_file.write("+JobFlavour   = \""+condor_queue+"\"\n")
@@ -87,10 +87,11 @@ def main(args):
         outjdl_file.write("MY.WantOS = \"el7\"\n")
         count = 0
         count_jobs = 0
+        output_string_list = []
         for SampleDASName in in_file:
             if SampleDASName[0] == "#": continue
             count = count +1
-            #if count > 1: break
+            # if count > 1: break
             print(style.RED +"="*51+style.RESET+"\n")
             print ("==> Sample : ",count)
             sample_name = SampleDASName.split('/')[1]
@@ -99,6 +100,7 @@ def main(args):
                 sample_name = sample_name + '_ext' + SampleDASName.split('ext')[-1].split('/')[0]
             print("==> sample_name = ",sample_name)
             campaign = SampleDASName.split('/')[2].split('-')[0]
+            campaign_ifNeeded = SampleDASName.split('/')[2].split('-')[1]
             print("==> campaign = ",campaign)
             ########################################
             #
@@ -107,21 +109,32 @@ def main(args):
             ########################################
             if (SampleDASName.strip()).endswith("/NANOAOD"): # if the sample name ends with /NANOAOD, then it is a data if it ends with /NANOAODSIM then it is a MC. As the line contain the "\n" at the end, so we need to use the strip() function.
                 output_string = sample_name + os.sep + campaign + os.sep + dirName
+                # if output_string is already present in the output_string_list, then append the campaign_ifNeeded
+                if output_string in output_string_list:
+                    output_string = sample_name + os.sep + campaign + os.sep + dirName + "_" + campaign_ifNeeded
                 output_path = EOS_Output_path + os.sep + output_string
                 print("==> output_path = ",output_path)
                 os.system("mkdir -p "+ output_path)
                 infoLogFiles.send_git_log_and_patch_to_eos(output_path)
             else:
                 output_string = campaign + os.sep + sample_name + os.sep + dirName
+                # if output_string is already present in the output_string_list, then append the campaign_ifNeeded
+                if output_string in output_string_list:
+                    output_string = campaign + os.sep + sample_name + os.sep + dirName + "_" + campaign_ifNeeded
+                    if output_string in output_string_list:
+                        output_string = campaign + os.sep + sample_name + os.sep + dirName + "_" + campaign_ifNeeded + "_ext" + SampleDASName.split('ext')[-1].split('/')[0]
                 output_path = EOS_Output_path+ os.sep + output_string
                 print("==> output_path = ",output_path)
                 os.system("mkdir -p "+output_path)
                 infoLogFiles.send_git_log_and_patch_to_eos(output_path)
+
+            output_string_list.append(output_string)
+
             #  print "==> output_path = ",output_path
 
             ########################################
-            #print 'dasgoclient --query="file dataset='+SampleDASName.strip()+'"'
-            #print "..."
+            # print 'dasgoclient --query="file dataset='+SampleDASName.strip()+'"'
+            # print "..."
             if use_custom_eos:
                 xrd_redirector = 'root://cms-xrd-global.cern.ch/'
                 output = os.popen(use_custom_eos_cmd + SampleDASName.strip()).read()
@@ -131,7 +144,7 @@ def main(args):
 
             count_root_files = 0
             for root_file in output.split():
-                #print "=> ",root_file
+                # print "=> ",root_file
                 count_root_files+=1
                 count_jobs += 1
                 outjdl_file.write("Output = "+output_log_path+"/"+sample_name+"_$(Process).stdout\n")
@@ -148,7 +161,6 @@ def main(args):
             print("Number of files: ",count_root_files)
             print("Number of jobs (till now): ",count_jobs)
         outjdl_file.close();
-
 
     outScript = open(condor_file_name+".sh","w");
     outScript.write('#!/bin/bash');
@@ -177,9 +189,17 @@ def main(args):
     outScript.write("\n"+'echo "..."');
     outScript.write("\n"+'echo "========================================="');
     if args.NOsyst:
-        outScript.write("\n"+command + " --entriesToRun 0  --inputFile ${1} --outputFile ${4}_hadd.root --cutFlowFile ${4}.json --DownloadFileToLocalThenRun True  --NOsyst");
+        outScript.write(
+            "\n"
+            + command
+            + " --entriesToRun 0  --inputFile ${1} --outputFile ${4}_hadd.root --cutFlowFile ${4}.json --DownloadFileToLocalThenRun True  --NOsyst"
+        )
     else:
-        outScript.write("\n"+command + " --entriesToRun 0  --inputFile ${1} --outputFile ${4}_hadd.root --cutFlowFile ${4}.json --DownloadFileToLocalThenRun True");
+        outScript.write(
+            "\n"
+            + command
+            + " --entriesToRun 0  --inputFile ${1} --outputFile ${4}_hadd.root --cutFlowFile ${4}.json --DownloadFileToLocalThenRun True"
+        )
     outScript.write("\n"+'echo "====> List root files : " ');
     outScript.write("\n"+'ls -ltrh *.root');
     outScript.write("\n"+'ls -ltrh *.json');
@@ -189,6 +209,7 @@ def main(args):
     outScript.write("\n"+'    echo "xrdcp -f ${4}_hadd.root  root://eosuser.cern.ch/${2}/${4}_Skim.root"');
     outScript.write("\n"+'    xrdcp -f ${4}_hadd.root  root://eosuser.cern.ch/${2}/${4}_Skim.root');
     outScript.write("\n"+'    echo "xrdcp -f ${4}.json  root://eosuser.cern.ch/${2}/cutFlow_${4}.json"');
+    outScript.write("\n"+'    xrdcp -f ${4}.json  root://eosuser.cern.ch/${2}/cutFlow_${4}.json');
     outScript.write("\n"+'else');
     outScript.write("\n"+'    echo "Something wrong: file ${4}_hadd.root does not exists, please check the post_proc.py script."');
     outScript.write("\n"+'fi');
@@ -206,7 +227,7 @@ def main(args):
     print("export X509_USER_PROXY=~/x509up_u48539")
     print("\n#Submit jobs:")
     print("condor_submit "+condor_file_name+".jdl")
-    #os.system("condor_submit "+condor_file_name+".jdl")
+    # os.system("condor_submit "+condor_file_name+".jdl")
 
 # Below patch is to format the help command as it is
 class PreserveWhitespaceFormatter(argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter):
@@ -222,7 +243,7 @@ if __name__ == "__main__":
     parser.add_argument("--eos_output_path", default='', help="EOS path for output files. By default it is `/eos/user/<UserInitials>/<UserName>/nanoAOD_ntuples`")
     parser.add_argument("--condor_log_path", default='./', help="Path where condor log should be saved. By default is the current working directory")
     parser.add_argument("--condor_file_name", default='submit_condor_jobs', help="Name for the condor file.")
-    parser.add_argument("--condor_queue", default="testmatch", help="""
+    parser.add_argument("--condor_queue", default="tomorrow", help="""
                         Condor queue options: (Reference: https://twiki.cern.ch/twiki/bin/view/ABPComputing/LxbatchHTCondor#Queue_Flavours)
 
                         name            Duration
@@ -235,6 +256,7 @@ if __name__ == "__main__":
                         testmatch          3d
                         nextweek           1w
                         """)
+
     parser.add_argument("--post_proc", default="post_proc.py", help="Post process script to run.")
     parser.add_argument("--transfer_input_files", default="keep_and_drop.txt", help="Files to be transferred as input.")
     parser.add_argument("--NOsyst", default=False, action='store_true', help="Run without systematics.")
@@ -242,4 +264,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args)
-#condor_setup_lxplus.py
+# condor_setup_lxplus.py
