@@ -89,6 +89,7 @@ keep D_*
 keep lep*
 keep pass*
 keep higgs*
+keep MT_2l2nu
 keep HZZ*
 keep Triggers_HZZ*
 keep *Weight

@@ -14,7 +14,7 @@ from PhysicsTools.NanoAODTools.postprocessing.modules.common.puWeightProducer im
 from H4Lmodule import *
 from H4LCppModule import *
 from JetSFMaker import *
-# from GenVarsProducer import *
+from GenVarsProducer import *
 
 def parse_arguments():
     """Parse command line arguments."""
@@ -92,7 +92,7 @@ def main():
     # GenVarModule = lambda : GenVarsProducer() # FIXME: Gen variable producer module is not working
     modulesToRun.extend([H4LCppModule()])
     # modulesToRun.extend([H4LCppModule(), GenVarModule()])
-    # modulesToRun.extend([ GenVarModule()])
+    #modulesToRun.extend([ GenVarModule()])
 
     print("systematic info: {}".format(args.NOsyst))
     print("Input json file: {}".format(jsonFileName))

@@ -105,6 +105,7 @@ class HZZAnalysisCppProducer(Module):
         self.passZZ4lEvts = 0
         self.passZZ2l2qEvts = 0
         self.passZZ2l2nuEvts = 0
+        self.passZZ2l2nu_emuCR_Evts = 0
 
     def beginJob(self):
         pass
@@ -177,10 +178,12 @@ class HZZAnalysisCppProducer(Module):
         self.out.branch("passZZ4lSelection",  "O")
         self.out.branch("passZZ2l2qSelection",  "O")
         self.out.branch("passZZ2l2nuSelection",  "O")
+        self.out.branch("passZZ2l2nu_emuCR_Selection", "O")
         self.out.branch("isBoosted2l2q",  "O")
         self.out.branch("HZZ2l2nu_ifVBF", "O")
         self.out.branch("HZZ2l2qNu_isELE", "O")
         self.out.branch("HZZ2l2qNu_cutOppositeChargeFlag", "O")
+        self.out.branch("HZZ2l2nu_isEMuCR", "O")
 
         # Branches for leptons related varialbes: 4l, 2l2q, 2l2nu
         self.out.branch("massL1",  "F")
@@ -245,6 +248,7 @@ class HZZAnalysisCppProducer(Module):
         self.out.branch("phiZ2_met",  "F")
         self.out.branch("pTZ2_met",  "F")
         self.out.branch("EneZ2_met",  "F")
+        self.out.branch("MT_2l2nu",  "F")
 
         # Branches for 2l2nu channel: ZZ kinematics
         self.out.branch("HZZ2l2nu_ZZmT",  "F")
@@ -312,7 +316,7 @@ class HZZAnalysisCppProducer(Module):
             print("======       Inside analyze function     ==========")
         # do this check at every event, as other modules might have read
         # further branches
-        #if event._tree._ttreereaderversion > self._ttreereaderversion:
+        # if event._tree._ttreereaderversion > self._ttreereaderversion:
         #    self.initReaders(event._tree)
         # do NOT access other branches in python between the check/call to
         # initReaders and the call to C++ worker code
@@ -344,6 +348,7 @@ class HZZAnalysisCppProducer(Module):
         phiZ2_met = -999.
         pTZ2_met = -999.
         EneZ2_met = -999.
+        MT_2l2nu = -999.
         HZZ2l2nu_minDPhi_METAK4 = 999.0
 
         HZZ2l2nu_ZZmT = -999.
@@ -485,19 +490,25 @@ class HZZAnalysisCppProducer(Module):
         passZZ2l2qSelection = False
         foundZZCandidate_2l2nu = False # for 2l2nu
         passZZ2l2nuSelection = False
+        foundZZCandidate_2l2nu_emuCR = False   # for 2l2nu emu control region
+        passZZ2l2nu_emuCR_Selection = False    # for 2l2nu emu control region
         HZZ2l2nu_ifVBF = False
         HZZ2l2qNu_isELE = False
+        HZZ2l2nu_isEMuCR = False
         HZZ2l2qNu_cutOppositeChargeFlag = False
         isBoosted2l2q = False
 
         if self.worker.GetZ1_2l2qOR2l2nu():
-            foundZZCandidate_2l2q = self.worker.ZZSelection_2l2q()
-            isBoosted2l2q = self.worker.isBoosted2l2q    # for 2l2q
-            if self.DEBUG: print("isBoosted2l2q: ", isBoosted2l2q)
-
+            # foundZZCandidate_2l2q = self.worker.ZZSelection_2l2q()
+            # isBoosted2l2q = self.worker.isBoosted2l2q    # for 2l2q
+            # if self.DEBUG: print("isBoosted2l2q: ", isBoosted2l2q)
             foundZZCandidate_2l2nu = self.worker.ZZSelection_2l2nu()
         # FIXME: To debug 2l2q and 2l2nu channels, I am commenting out the 4l channel
         # foundZZCandidate_4l = self.worker.ZZSelection_4l()
+        ##if self.worker.GetZ1_emuCR():
+        ##HZZ2l2nu_isEMuCR = True;
+        ##foundZZCandidate_2l2nu = self.worker.ZZSelection_2l2nu()
+        # foundZZCandidate_2l2nu_emuCR = self.worker.ZZSelection_2l2nu_EMu_CR()
 
         HZZ2l2q_boostedJet_PNScore = self.worker.boostedJet_PNScore
         HZZ2l2q_boostedJet_Index = self.worker.boostedJet_Index
@@ -510,8 +521,8 @@ class HZZAnalysisCppProducer(Module):
         # For 2l2nu channel
         HZZ2l2nu_ifVBF = self.worker.HZZ2l2nu_ifVBF
         HZZ2l2qNu_isELE = self.worker.HZZ2l2qNu_isELE
+        HZZ2l2nu_isEMuCR = self.worker.HZZ2l2nu_isEMuCR
         HZZ2l2qNu_cutOppositeChargeFlag = self.worker.HZZ2l2qNu_cutOppositeChargeFlag
-        HZZ2l2qNu_nJets = self.worker.HZZ2l2qNu_nJets
         HZZ2l2qNu_nJets = self.worker.HZZ2l2qNu_nJets
         HZZ2l2qNu_nTightBtagJets = self.worker.HZZ2l2qNu_nTightBtagJets
         HZZ2l2qNu_nMediumBtagJets = self.worker.HZZ2l2qNu_nMediumBtagJets
@@ -563,11 +574,15 @@ class HZZAnalysisCppProducer(Module):
             keepIt = True
             passZZ2l2nuSelection = True
             self.passZZ2l2nuEvts += 1
-        #     FatJet_PNZvsQCD = self.worker.FatJet_PNZvsQCD
-        #     self.out.fillBranch("FatJet_PNZvsQCD",FatJet_PNZvsQCD)
+            #     FatJet_PNZvsQCD = self.worker.FatJet_PNZvsQCD
+            #     self.out.fillBranch("FatJet_PNZvsQCD",FatJet_PNZvsQCD)
             phiZ2_met = self.worker.Z2_met.Phi()
             pTZ2_met = self.worker.Z2_met.Pt()
             EneZ2_met = self.worker.Z2_met.E()
+            MT_2l2nu = self.worker.ZZ_metsystem.Mt()
+
+            HZZ2l2nu_ZZmT = self.worker.ZZ_metsystem.Mt()
+            HZZ2l2nu_ZZpT = self.worker.ZZ_metsystem.Pt()
 
             HZZ2l2nu_ZZmT = self.worker.ZZ_metsystem.Mt()
             HZZ2l2nu_ZZpT = self.worker.ZZ_metsystem.Pt()
@@ -599,10 +614,10 @@ class HZZAnalysisCppProducer(Module):
                 HZZ2l2nu_VBFdPhi_jj = abs(VBF_jet1.DeltaPhi(VBF_jet2))
                 HZZ2l2nu_VBFdR_jj = VBF_jet1.DeltaR(VBF_jet2)
 
-            #print("inside 2l2nu loop")
-        #self.out.fillBranch("phiZ2_met",phiZ2_met)
-        #self.out.fillBranch("pTZ2_met",pTZ2_met)
-        #self.out.fillBranch("EneZ2_met",EneZ2_met)
+            # print("inside 2l2nu loop")
+        # self.out.fillBranch("phiZ2_met",phiZ2_met)
+        # self.out.fillBranch("pTZ2_met",pTZ2_met)
+        # self.out.fillBranch("EneZ2_met",EneZ2_met)
 
         if (foundZZCandidate_4l):
             keepIt = True
@@ -639,7 +654,6 @@ class HZZAnalysisCppProducer(Module):
                 phiL3, phiL4 = phiL4, phiL3
                 massL3, massL4 = massL4, massL3
 
-
             pT4l = self.worker.ZZsystem.Pt()
             eta4l = self.worker.ZZsystem.Eta()
             phi4l = self.worker.ZZsystem.Phi()
@@ -661,6 +675,7 @@ class HZZAnalysisCppProducer(Module):
         self.out.fillBranch("phiZ2_met",phiZ2_met)
         self.out.fillBranch("pTZ2_met",pTZ2_met)
         self.out.fillBranch("EneZ2_met",EneZ2_met)
+        self.out.fillBranch("MT_2l2nu",MT_2l2nu)
         self.out.fillBranch("HZZ2l2nu_ZZmT", HZZ2l2nu_ZZmT)
         self.out.fillBranch("HZZ2l2nu_ZZpT", HZZ2l2nu_ZZpT)
         self.out.fillBranch("HZZ2l2nu_minDPhi_METAK4", HZZ2l2nu_minDPhi_METAK4)
@@ -751,8 +766,8 @@ class HZZAnalysisCppProducer(Module):
 
         self.out.fillBranch("HZZ2l2nu_ifVBF",HZZ2l2nu_ifVBF)
         self.out.fillBranch("HZZ2l2qNu_isELE",HZZ2l2qNu_isELE)
+        self.out.fillBranch("HZZ2l2nu_isEMuCR",HZZ2l2nu_isEMuCR)
         self.out.fillBranch("HZZ2l2qNu_cutOppositeChargeFlag",HZZ2l2qNu_cutOppositeChargeFlag)
-        self.out.fillBranch("HZZ2l2qNu_nJets",HZZ2l2qNu_nJets)
         self.out.fillBranch("HZZ2l2qNu_nJets",HZZ2l2qNu_nJets)
         self.out.fillBranch("HZZ2l2qNu_nTightBtagJets",HZZ2l2qNu_nTightBtagJets)
         self.out.fillBranch("HZZ2l2qNu_nMediumBtagJets",HZZ2l2qNu_nMediumBtagJets)
@@ -766,4 +781,4 @@ class HZZAnalysisCppProducer(Module):
 # define modules using the syntax 'name = lambda : constructor' to avoid
 # having them loaded when not needed
 
-#H4LCppModulie() = lambda: HZZAnalysisCppProducer(year)
+# H4LCppModulie() = lambda: HZZAnalysisCppProducer(year)
