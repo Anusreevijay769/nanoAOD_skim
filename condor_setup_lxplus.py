@@ -64,7 +64,7 @@ def main(args):
     os.system('xrdcp ' + CMSSWRel+".tgz" + '  root://eosuser.cern.ch/'+storeDir+'/' + CMSSWRel+".tgz")
 
     post_proc_to_run = "post_proc.py"
-    command = "python "+post_proc_to_run
+    command = "python3 "+post_proc_to_run
     condor_arguments_list = []  # A list that contains all the arguments to be passed for each job
 
     outjdl_file = open(condor_file_name+".jdl","w")
@@ -74,7 +74,6 @@ Universe = vanilla
 Notification = ERROR
 Should_Transfer_Files = NO
 x509userproxy = $ENV(X509_USER_PROXY)
-MY.SingularityImage = "/cvmfs/unpacked.cern.ch/gitlab-registry.cern.ch/cms-cat/cmssw-lxplus/cmssw-el7-lxplus:latest/"
 Output = {output_log_path}/$(logtxt)_$(Process).stdout
 Error = {output_log_path}/$(logtxt)_$(Process).err
 Log = {output_log_path}/$(logtxt)_$(Process).log
