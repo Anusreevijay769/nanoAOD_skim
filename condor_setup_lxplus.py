@@ -68,6 +68,7 @@ def main(args):
     condor_arguments_list = []  # A list that contains all the arguments to be passed for each job
 
     outjdl_file = open(condor_file_name+".jdl","w")
+    condor_queue = "espresso" if args.debug else condor_queue
     outjdl_file.write(f"""+JobFlavour = "{condor_queue}"
 Executable = {condor_file_name}.sh
 Universe = vanilla
@@ -79,11 +80,7 @@ Error = {output_log_path}/$(logtxt)_$(Process).err
 Log = {output_log_path}/$(logtxt)_$(Process).log
 Arguments = "$(infile) $(outfile) $(eospath) $(outfilename)"
 queue infile, outfile, eospath, outfilename, logtxt from {condor_file_name}.txt
-""".format(
-        condor_queue=condor_queue,
-        condor_file_name=condor_file_name,
-        output_log_path=output_log_path
-        ))
+""")
     outjdl_file.close()
 
     with open('input_data_Files/'+InputFileFromWhereReadDASNames) as in_file:
@@ -174,7 +171,11 @@ queue infile, outfile, eospath, outfilename, logtxt from {condor_file_name}.txt
 
     # Create the executable file for condor jobs
     outScript = open(condor_file_name + ".sh", "w")
-    outScript.write("""#!/bin/bash
+    # Variables for the outScript
+    entries = 100 if args.debug else 0
+    no_syst_flag="--NOsyst" if args.NOsyst else ""
+
+    outScript.write(f"""#!/bin/bash
 echo "Starting job on " `date`
 echo "Running on: `uname -a`"
 echo "System software: `cat /etc/redhat-release`"
@@ -199,7 +200,8 @@ echo "..."
 cat post_proc.py
 echo "..."
 echo "========================================="
-{command} --entriesToRun 0 --inputFile ${{1}} --outputFile ${{4}}_hadd.root --cutFlowFile ${{4}}.json --DownloadFileToLocalThenRun True {no_syst_flag}
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CMSSW_BASE/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/nanoAOD_skim/JHUGenMELA/MELA/data/el9_amd64_gcc12
+{command} --entriesToRun {entries} --inputFile ${{1}} --outputFile ${{4}}_hadd.root --cutFlowFile ${{4}}.json --DownloadFileToLocalThenRun True {no_syst_flag}
 echo "====> List root files : "
 ls -ltrh *.root
 ls -ltrh *.json
@@ -216,12 +218,7 @@ fi
 rm *.root
 cd ${{_CONDOR_SCRATCH_DIR}}
 rm -rf {CMSSWRel}
-""".format(
-    CMSSWRel=CMSSWRel,
-    TOP_LEVEL_DIR_NAME=TOP_LEVEL_DIR_NAME,
-    command=command,
-    no_syst_flag="--NOsyst" if args.NOsyst else ""
-    ))
+""")
     outScript.close()
     os.system("chmod 777 "+condor_file_name+".sh");
 

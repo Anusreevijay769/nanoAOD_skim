@@ -32,9 +32,9 @@ class HZZAnalysisCppProducer(Module):
         # Adding yaml-cpp headers to the include path
         ROOT.gSystem.AddIncludePath("-I%s/include" % yaml_cpp_path)
         libraries = [
+            'libmcfm_710.so',
             'libJHUGenMELAMELA.so',
             'libjhugenmela.so',
-            'libmcfm_710.so',
             'libcollier.so',
         ]
         for lib in libraries:

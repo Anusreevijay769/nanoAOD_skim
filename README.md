@@ -17,6 +17,7 @@ nanoAOD skiming code for H->ZZ->2l2Q studies.
    git clone git@github.com:cms-nanoAOD/nanoAOD-tools.git PhysicsTools/NanoAODTools
    cd PhysicsTools/NanoAODTools
    git checkout d163c18096fe2c5963ff5a9764bb420b46632178 # Updated to commit on 6 Dec 2023 in official nanoAOD-tools
+   git apply ../external/nanoAODTools_py2to3.patch
    ```
 
 3. Step: 3: Get our analysis repository
@@ -55,12 +56,15 @@ nanoAOD skiming code for H->ZZ->2l2Q studies.
    git apply ../external/JHUGen_py2to3.patch
    cd ..
    sh JHUGenMELA/MELA/setup.sh -j 8
+   chmod +x JHUGenMELA/MELA/data/el9_amd64_gcc12/libmcfm_710.so
+   chmod +x JHUGenMELA/MELA/data/el9_amd64_gcc12/libjhugenmela.so
    ```
 
 4. Step: 4: interactive running
 
    ```bash
    cd $CMSSW_BASE/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/nanoAOD_skim
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/afs/cern.ch/work/r/rasharma/h2l2nu/checkNewSetup_15July2024/CMSSW_14_0_2/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/nanoAOD_skim/JHUGenMELA/MELA/data/el9_amd64_gcc12
    python3 post_proc.py
    ```
 
