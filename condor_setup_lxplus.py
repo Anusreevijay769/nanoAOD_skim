@@ -200,20 +200,21 @@ echo "..."
 cat post_proc.py
 echo "..."
 echo "========================================="
+output_file=${{4}}_hadd.root
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CMSSW_BASE/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/nanoAOD_skim/JHUGenMELA/MELA/data/el9_amd64_gcc12
-{command} --entriesToRun {entries} --inputFile ${{1}} --outputFile ${{4}}_hadd.root --cutFlowFile ${{4}}.json --DownloadFileToLocalThenRun True {no_syst_flag}
+{command} --entriesToRun {entries} --inputFile ${{1}} --outputFile ${{output_file}} --cutFlowFile ${{4}}.json --DownloadFileToLocalThenRun True {no_syst_flag}
 echo "====> List root files : "
 ls -ltrh *.root
 ls -ltrh *.json
 echo "====> copying *.root file to stores area..."
-if ls ${{4}}_hadd.root 1> /dev/null 2>&1; then
-    echo "File ${{4}}_hadd.root exists. Copy this."
-    echo "xrdcp -f ${{4}}_hadd.root root://eosuser.cern.ch/${{2}}/${{4}}_Skim.root"
-    xrdcp -f ${{4}}_hadd.root root://eosuser.cern.ch/${{2}}/${{4}}_Skim.root
+if ls ${{output_file}} 1> /dev/null 2>&1; then
+    echo "File ${{output_file}} exists. Copy this."
+    echo "xrdcp -f ${{output_file}} root://eosuser.cern.ch/${{2}}/${{4}}_Skim.root"
+    xrdcp -f ${{output_file}} root://eosuser.cern.ch/${{2}}/${{4}}_Skim.root
     echo "xrdcp -f ${{4}}.json root://eosuser.cern.ch/${{2}}/cutFlow_${{4}}.json"
     xrdcp -f ${{4}}.json root://eosuser.cern.ch/${{2}}/cutFlow_${{4}}.json
 else
-    echo "Something wrong: file ${{4}}_hadd.root does not exists, please check the post_proc.py script."
+    echo "Something wrong: file ${{output_file}} does not exists, please check the post_proc.py script."
 fi
 rm *.root
 cd ${{_CONDOR_SCRATCH_DIR}}
