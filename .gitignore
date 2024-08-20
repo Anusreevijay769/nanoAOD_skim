@@ -170,3 +170,5 @@ br.sm2
 *linkdef.h
 JHUGenMELA/
 cutFlow.json
+yaml-cpp/
+nanoAOD_skim.wiki/
