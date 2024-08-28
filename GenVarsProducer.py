@@ -42,8 +42,23 @@ class GenVarsProducer(Module):
         self.out.branch("Boostdiff", "F")
         self.out.branch("Pz_neutrino1", "F")
         self.out.branch("Pz_neutrino2", "F")
-        #self.out.branch("", "F")
         self.out.branch("delta_pz_neutrino", "F")
+        self.out.branch("Onshell_Z2_pT", "F")
+        self.out.branch("Onshell_Z2_eta", "F")
+        self.out.branch("Onshell_Z2_phi", "F")
+        self.out.branch("Onshell_Z2_mass", "F")
+        self.out.branch("Offshell_Z1_pT", "F")
+        self.out.branch("Offshell_Z1_eta", "F")
+        self.out.branch("Offshell_Z1_phi", "F")
+        self.out.branch("Offshell_Z1_mass", "F")
+        self.out.branch("Onshell_Z1_pT", "F")
+        self.out.branch("Onshell_Z1_eta", "F")
+        self.out.branch("Onshell_Z1_phi", "F")
+        self.out.branch("Onshell_Z1_mass", "F")
+        self.out.branch("Offshell_Z2_pT", "F")
+        self.out.branch("Offshell_Z2_eta", "F")
+        self.out.branch("Offshell_Z2_phi", "F")
+        self.out.branch("Offshell_Z2_mass", "F")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -260,6 +275,26 @@ class GenVarsProducer(Module):
             boost_diff_mag = boost_Z1_mag - boost_Z2_mag
             self.DEBUG: print("delta boost: {}".format(boost_diff_mag))
             #self.out.fillBranch("Boostdiff", boost_diff_mag)
+
+        # selecting onshell and offshell Z bosons
+            if abs(91 - v1_mass) > abs(91 - v2_mass):
+                self.out.fillBranch("Onshell_Z2_pT", v2.pt)
+                self.out.fillBranch("Onshell_Z2_eta", v2.eta)
+                self.out.fillBranch("Onshell_Z2_phi", v2.phi)
+                self.out.fillBranch("Onshell_Z2_mass", v2.mass)
+                self.out.fillBranch("Offshell_Z1_pT", v1.pt)
+                self.out.fillBranch("Offshell_Z1_eta", v1.eta)
+                self.out.fillBranch("Offshell_Z1_phi", v1.phi)
+                self.out.fillBranch("Offshell_Z1_mass", v1.mass)
+            elif abs(91 - v1_mass) < abs(91 - v2_mass):
+                self.out.fillBranch("Onshell_Z1_pT", v1.pt)
+                self.out.fillBranch("Onshell_Z1_eta", v1.eta)
+                self.out.fillBranch("Onshell_Z1_phi", v1.phi)
+                self.out.fillBranch("Onshell_Z1_mass", v1.mass)
+                self.out.fillBranch("Offshell_Z2_pT", v2.pt)
+                self.out.fillBranch("Offshell_Z2_eta", v2.eta)
+                self.out.fillBranch("Offshell_Z2_phi", v2.phi)
+                self.out.fillBranch("Offshell_Z2_mass", v2.mass)
 
         #self.out.fillBranch("Pz_neutrino", Pz)
         self.out.fillBranch("Pz_neutrino1", pz1)

@@ -101,8 +101,8 @@ def main():
     H4LCppModule = lambda: HZZAnalysisCppProducer(year,cfgFile, isMC, isFSR, args.cutFlowFile, args.DEBUG)
     GenVarModule = lambda : GenVarsProducer() # FIXME: Gen variable producer module is not working
     #modulesToRun.extend([H4LCppModule()])
-    modulesToRun.extend([H4LCppModule(), GenVarModule()])
-    # modulesToRun.extend([ GenVarModule()])
+    #modulesToRun.extend([H4LCppModule(), GenVarModule()])
+    modulesToRun.extend([ GenVarModule()])
 
     print("systematic info: {}".format(args.NOsyst))
     print("Input json file: {}".format(jsonFileName))
@@ -126,7 +126,7 @@ def main():
 
         # INFO: Keep the `fwkJobReport=False` to trigger `haddnano.py`
         #            otherwise the output file will have larger size then expected. Reference: https://github.com/cms-nanoAOD/nanoAOD-tools/issues/249
-        temp_keep_drop_file = create_temp_keep_drop_file(keep_drop_rules_GEN + keep_drop_rules_Data_MC)
+        temp_keep_drop_file = create_temp_keep_drop_file(keep_drop_rules_Data_MC + keep_drop_rules_GEN )
         print("DEBUG: Keep and drop file: {}".format(temp_keep_drop_file))
         p=PostProcessor(args.outputDir,testfilelist, None, None,modules = modulesToRun,
                         provenance=True,fwkJobReport=True,
