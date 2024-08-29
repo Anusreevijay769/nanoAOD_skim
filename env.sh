@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cmsenv
+
 # Update LD_LIBRARY_PATH for JHUGenMELA
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CMSSW_BASE/src/PhysicsTools/NanoAODTools/python/postprocessing/analysis/nanoAOD_skim/JHUGenMELA/MELA/data/el9_amd64_gcc12
 

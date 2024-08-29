@@ -119,39 +119,19 @@ class GenVarsProducer(Module):
                             found_Z1 = True
                             self.DEBUG: print("DEBUG - line 81 (found Z1 boson, daughter of higgs): Index: {}, Particle ID: {}, Parent ID: {}, MotherIdx: {}, Status: {}".format(idx, v1.pdgId, self.getParentID(v1, genParticles), v1.genPartIdxMother, v1.statusFlags >> 13 & 1))
                             v1_daughters.append(daughter1)
-                        #elif temp_boson is None:
-                            #temp_boson = particle
-                            #if v2 is None:
-                                #v2 = temp_boson
-                                #v2_daughters.append(daughter1)
                     n = len(v1_daughters)
                     if len(v1_daughters) == 2:
                         for i in range(n):
                              v1_decay_products = v1_daughters
                              self.DEBUG: print("DEBUG - line 92 ( 2 daughters of Z1 boson): Index: {}, Particle ID: {}, Parent ID: {}, MotherIdx: {},  Status: {}".format(idx, v1_decay_products[i].pdgId, self.getParentID(v1_decay_products[i], genParticles), v1_decay_products[i].genPartIdxMother,  v1_decay_products[i].statusFlags >> 13 & 1))
 
-                    #m = len(v2_daughters)
-                    #if len(v2_daughters) == 2:
-                        #for i in range(m):
-                             #v1_decay_products = v1_daughters
-                             #self.DEBUG: print("DEBUG - line 108 ( 2 daughters of Z2 boson): Index: {}, Particle ID: {}, Parent ID: {}, MotherIdx: {},  Status: {}".format(idx, v2_decay_products[i].pdgId, self.getParentID(v2_decay_products[i], genParticles), v2_decay_products[i].genPartIdxMother,  v2_decay_products[i].statusFlags >> 13 & 1))
-                    #elif abs(v1_daughters[0].pdgId) in [1, 2, 3, 4, 5] and abs(v1_daughters[1].pdgId) in [1, 2, 3, 4, 5]:
-                        #v1_decay_products = v1_daughters
-                #if v2 is None:
-                    #v1 = particle
-                    #v2_daughters = []
-                    #v1_daughters = []
                     for daughter2 in genParticles:
                         if abs(daughter2.pdgId) in [12, 14, 16] and daughter2.genPartIdxMother == idx and self.getParentID(daughter2, genParticles) == 23 and daughter2.statusFlags >> 13 & 1:
                             v2 = particle
                             found_Z2 = True
                             self.DEBUG: print("DEBUG - line 115 (found Z2 boson, daughter of higgs): Index: {}, Particle ID: {}, Parent ID: {}, MotherIdx: {}, Status: {}".format(idx, v2.pdgId, self.getParentID(v2, genParticles), v2.genPartIdxMother, v2.statusFlags >> 13 & 1))
                             v2_daughters.append(daughter2)
-                        #elif temp_boson1 is None:
-                            #temp_boson1 = particle
-                            #if v1 is None:
-                                #v1 = temp_boson1
-                                #v1_daughters.append(daughter2)
+                
                     m = len(v2_daughters)
                     if len(v2_daughters) == 2:
                         for i in range(m):
@@ -194,6 +174,7 @@ class GenVarsProducer(Module):
             v1_decay_products_phi = [daughter.phi for daughter in v1_decay_products]
             v1_decay_products_mass = [daughter.mass for daughter in v1_decay_products]
             self.DEBUG: print("v1_decay_products_pt:", v1_decay_products_pt, type(v1_decay_products_pt))
+            self.DEBUG: print("v1_decay_products_mass:", v1_decay_products_mass, type(v1_decay_products_mass))
             #pz = v1_decay_products_pt[0] * math.sinh(v1_decay_products_eta[0])
             #self.DEBUG: print("pz of neutrino1:", pz, type(pz))
             #for i in range(2):

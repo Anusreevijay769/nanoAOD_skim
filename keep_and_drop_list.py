@@ -28,7 +28,12 @@ keep_drop_rules_GEN = [
     "keep genV1DaughterPt",
     "keep Pz_neutrino",
     "keep delta_pz_neutrino",
-    "keep Pz_neutrino1"
+    "keep Pz_neutrino1",
+    "keep Onshell*",
+    "keep Offshell*",
+    "keep genV1*",
+    "keep genV2*"
+    
 ]
 
 keep_drop_rules_Data_MC = [
