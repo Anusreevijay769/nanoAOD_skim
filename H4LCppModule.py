@@ -12,11 +12,12 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 class HZZAnalysisCppProducer(Module):
 
-    def __init__(self, year, cfgFile, isMC, isFSR, cutFlowJSONFile, DEBUG=False):
+    def __init__(self, year, cfgFile, isMC, isFSR, cutFlowJSONFile, channels, DEBUG=False):
         self.loadLibraries()
         self.year = year
         self.isMC = isMC
         self.cutFlowJSONFile = cutFlowJSONFile
+        self.channels = channels # choices=["all", "4l", "2l2q", "2l2v"],
         self.DEBUG = DEBUG
         self.cfgFile = cfgFile
         self.cfg = self._load_config(cfgFile)
@@ -549,17 +550,17 @@ class HZZAnalysisCppProducer(Module):
         HZZ2l2qNu_cutOppositeChargeFlag = False
         isBoosted2l2q = False
 
-        if self.worker.GetZ1_2l2qOR2l2nu():  #commented out for now
-            # foundZZCandidate_2l2q = self.worker.ZZSelection_2l2q()
-            # isBoosted2l2q = self.worker.isBoosted2l2q    # for 2l2q
-            # if self.DEBUG: print("isBoosted2l2q: ", isBoosted2l2q)
-            foundZZCandidate_2l2nu = self.worker.ZZSelection_2l2nu()  #commented out for now
-        # FIXME: To debug 2l2q and 2l2nu channels, I am commenting out the 4l channel
-        # foundZZCandidate_4l = self.worker.ZZSelection_4l()
-        if self.worker.GetZ1_emuCR():
-            #HZZ2l2nu_isEMuCR = True;
+        if self.worker.GetZ1_2l2qOR2l2nu() and (self.channels == "all"  or self.channels == "2l2v" or self.channels == "2l2q"):  #commented out for now
+            if self.channels == "2l2q" or self.channels == "all":
+                foundZZCandidate_2l2q = self.worker.ZZSelection_2l2q()
+                isBoosted2l2q = self.worker.isBoosted2l2q
+                if self.DEBUG: print("isBoosted2l2q: ", isBoosted2l2q)
+            if self.channels == "2l2v" or self.channels == "all":
+                foundZZCandidate_2l2nu = self.worker.ZZSelection_2l2nu()  #commented out for now
+        if self.worker.GetZ1_emuCR() and (self.channels == "all"  or self.channels == "4l"):
+            foundZZCandidate_4l = self.worker.ZZSelection_4l()
+        if self.worker.GetZ1_emuCR() and (self.channels == "all"  or self.channels == "2l2v"):
             foundZZCandidate_2l2nu_emuCR = self.worker.ZZSelection_2l2nu()
-        #foundZZCandidate_2l2nu_emuCR = self.worker.ZZSelection_2l2nu_EMu_CR()
 
         HZZ2l2q_boostedJet_PNScore = self.worker.boostedJet_PNScore
         HZZ2l2q_boostedJet_Index = self.worker.boostedJet_Index
