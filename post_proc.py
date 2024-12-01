@@ -27,7 +27,7 @@ def parse_arguments():
     parser.add_argument('-c', '--cutFlowFile', default="cutFlow.json", type=str, help="Cut flow file name")
     parser.add_argument("-n", "--entriesToRun", default=100, type=int, help="Set  to 0 if need to run over all entries else put number of entries to run")
     parser.add_argument("-d", "--DownloadFileToLocalThenRun", default=True, type=bool, help="Download file to local then run")
-    parser.add_argument("--NOsyst", default=False, action="store_true", help="Do not run systematics")
+    parser.add_argument("--WithSyst", default=False, action="store_true", help="Do not run systematics")
     parser.add_argument("--DEBUG", default=False, action="store_true", help="Print debug information")
     return parser.parse_args()
 
@@ -99,7 +99,7 @@ def main():
         sfFileName = "DeepCSV_102XSF_V2.csv"
         modulesToRun.extend([muonScaleRes2016()])
     H4LCppModule = lambda: HZZAnalysisCppProducer(year,cfgFile, isMC, isFSR, args.cutFlowFile, args.DEBUG)
-    print("systematic info: {}".format(args.NOsyst))
+    print("systematic info: {}".format(args.WithSyst))
     print("Input json file: {}".format(jsonFileName))
     print("Input cfg file: {}".format(cfgFile))
     print("isMC: {}".format(isMC))
@@ -108,7 +108,7 @@ def main():
     if isMC:
         GenVarModule = lambda : GenVarsProducer() # FIXME: Gen variable producer module is not working
         modulesToRun.extend([H4LCppModule(), GenVarModule()])
-        if (not args.NOsyst):
+        if (args.WithSyst):
             jetmetCorrector = createJMECorrector(isMC=isMC, dataYear=year, jesUncert="All", jetType = "AK4PFchs")
             fatJetCorrector = createJMECorrector(isMC=isMC, dataYear=year, jesUncert="All", jetType = "AK8PFPuppi")
             # btagSF = lambda: btagSFProducer("UL"+str(year), algo="deepjet",selectedWPs=['L','M','T','shape_corr'], sfFileName=sfFileName)
@@ -133,7 +133,7 @@ def main():
                         outputbranchsel=temp_keep_drop_file)
     else:
         modulesToRun.extend([H4LCppModule()])
-        if (not args.NOsyst):
+        if (args.WithSyst):
             jetmetCorrector = createJMECorrector(isMC=isMC, dataYear=year, jesUncert="All", jetType = "AK4PFchs")
             fatJetCorrector = createJMECorrector(isMC=isMC, dataYear=year, jesUncert="All", jetType = "AK8PFPuppi")
             modulesToRun.extend([jetmetCorrector(), fatJetCorrector()])
