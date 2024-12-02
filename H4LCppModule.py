@@ -557,7 +557,7 @@ class HZZAnalysisCppProducer(Module):
                 if self.DEBUG: print("isBoosted2l2q: ", isBoosted2l2q)
             if self.channels == "2l2v" or self.channels == "all":
                 foundZZCandidate_2l2nu = self.worker.ZZSelection_2l2nu()  #commented out for now
-        if self.worker.GetZ1_emuCR() and (self.channels == "all"  or self.channels == "4l"):
+        if (self.channels == "all"  or self.channels == "4l"):
             foundZZCandidate_4l = self.worker.ZZSelection_4l()
         if self.worker.GetZ1_emuCR() and (self.channels == "all"  or self.channels == "2l2v"):
             foundZZCandidate_2l2nu_emuCR = self.worker.ZZSelection_2l2nu()
